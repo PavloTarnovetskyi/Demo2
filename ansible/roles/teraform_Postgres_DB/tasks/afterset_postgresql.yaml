@@ -1,0 +1,68 @@
+- name: "remove global peer method"
+  become: yes
+  become_user: postgres
+  postgresql_pg_hba:
+    dest: "~/data/pg_hba.conf"
+    contype: local
+    databases: all
+    users: all
+    method: peer
+    state: absent
+  notify: restart PostreSQL
+
+- name: "add peer method for 'postgres'"
+  become: yes
+  become_user: postgres
+  postgresql_pg_hba:
+    dest: "~/data/pg_hba.conf"
+    contype: local
+    databases: all
+    users: postgres
+    method: peer
+    state: present
+
+- name: "add md5 method for '{{ db_user }}'"
+  become: yes
+  become_user: postgres
+  postgresql_pg_hba:
+    dest: "~/data/pg_hba.conf"
+    contype: local
+    databases: all
+    users: geocitizen
+    method: md5
+    state: present
+
+- name: "allow md5 connection for the db user via ipv4"
+  become: yes
+  become_user: postgres
+  postgresql_pg_hba:
+    dest: "~/data/pg_hba.conf"
+    contype: host
+    databases: all
+    users: "{{ db_user }}"
+    source: 0.0.0.0/0
+    method: md5
+    state: present
+
+- name: "allow md5 connection for the db user via ipv6"
+  become: yes
+  become_user: postgres
+  postgresql_pg_hba:
+    dest: "~/data/pg_hba.conf"
+    contype: host
+    databases: all
+    users: "{{ db_user }}"
+    source: ::/0
+    method: md5
+    state: present
+
+- name: "configure PostgreSQL listen address"
+  become: yes
+  lineinfile: dest=/var/lib/pgsql/data/postgresql.conf
+    regexp="listen_addresses =" line="listen_addresses = '*'" state=present
+
+- name: "configure PostgreSQL listen port"
+  become: yes
+  lineinfile: dest=/var/lib/pgsql/data/postgresql.conf
+    regexp="port =" line="port = 5432" state=present
+  notify: restart PostreSQL

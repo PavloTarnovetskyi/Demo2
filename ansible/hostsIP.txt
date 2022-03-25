@@ -1,0 +1,4 @@
+    [terraform_ubuntu]
+    13.49.138.87
+    [teraform_Postgres_DB]
+    16.170.165.6

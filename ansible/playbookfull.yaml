@@ -1,0 +1,20 @@
+---
+
+## for DB instance
+- name: DB
+  hosts: teraform_Postgres_DB
+  become_method: sudo
+  remote_user: ec2-user
+  roles:
+     - teraform_Postgres_DB
+     
+     ## for server instance
+- name: Server
+  hosts: terraform_ubuntu
+  remote_user: ubuntu
+  become_method: sudo
+  become: yes
+  roles:
+    - terraform_ubuntu
+    
+...    

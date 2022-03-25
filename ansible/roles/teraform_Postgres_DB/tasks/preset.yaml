@@ -1,0 +1,22 @@
+- name: DB server update 
+  yum:
+    update_cache: yes
+
+- name: install python-pip
+  become: yes
+  yum:
+    name: python-pip
+    state: present
+
+- name: install Python packages
+  become: yes
+  pip: "name={{ item }}  state=present"
+  with_items:
+    - psycopg2-binary
+
+- name: install PostgreSQL
+  become: yes
+  yum:
+    name: postgresql-server.x86_64
+    state: present
+

@@ -1,0 +1,16 @@
+- name: "status PostgreSQL "
+  become: yes
+  ansible.builtin.stat:
+    path: "/var/lib/pgsql/data/pg_hba.conf"
+  register: postgres_data
+
+- name: "initialize PostgreSQL"
+  become: yes
+  command: "postgresql-setup initdb"
+  when: not postgres_data.stat.exists
+
+- name: "start && enable PostreSQL service"
+  become: yes
+  service: "name={{ item }} state=started enabled=yes"
+  with_items:
+    - postgresql

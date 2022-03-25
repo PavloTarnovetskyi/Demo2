@@ -1,0 +1,7 @@
+---
+
+- name: restart PostreSQL
+  become: yes
+  service: "name={{ item }} state=restarted"
+  with_items:
+    - postgresql

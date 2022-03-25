@@ -1,0 +1,23 @@
+- name: handle the error of 'peer' or 'md5' metod
+  block:
+
+  - name: "create Geo app database"
+    become: yes
+    become_user: postgres
+    postgresql_db:
+      state: present
+      name: "{{ db_name }}"
+
+  - name: "create Geo app db user + password"
+    become: yes
+    become_user: postgres
+    postgresql_user:
+      state: present
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      role_attr_flags: CREATEDB
+
+  rescue:
+  - name: error was handled
+    ansible.builtin.debug:
+      msg: "postgres plugin for Ansible can't perform this set of task due to md5 method of logining to PostgreSQL"
